@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import { Home, Settings, Tag, Hash } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import UserContext from "./contexts/user-context";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const items = [
   {
@@ -55,7 +57,9 @@ export function AppSidebar() {
             </h1>
           </div>
           <SidebarGroup>
-            <SidebarGroupLabel className="text-rose-500 text-lg">Navigation</SidebarGroupLabel>
+            <SidebarGroupLabel className="text-rose-500 text-lg">
+              Navigation
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => (
@@ -66,7 +70,7 @@ export function AppSidebar() {
                         className="flex items-center space-x-2 text-rose-950"
                       >
                         <item.icon className="mr-2 h-4 w-4" />
-                        <span >{item.title}</span>
+                        <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -106,7 +110,9 @@ export function AppSidebar() {
                 </SidebarGroup>
               </Collapsible>
               <SidebarGroup>
-                <SidebarGroupLabel className="text-rose-500 text-lg">Account</SidebarGroupLabel>
+                <SidebarGroupLabel className="text-rose-500 text-lg">
+                  Account
+                </SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {loggedInItems.map((item) => (

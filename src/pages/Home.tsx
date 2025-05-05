@@ -1,6 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { NoteCard } from "@/components/note-card";
 import Masonry from "react-masonry-css";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { format } from "date-fns";
+import { CalendarIcon, Search } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 const noteData = [
   {
@@ -43,18 +56,86 @@ const breakpoints = {
 };
 
 function Home() {
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
   return (
-    <div className="m-4">
-      <Masonry
-        breakpointCols={breakpoints}
-        className="my-masonry-grid"
-        columnClassName="my-masonry-grid_column"
-      >
-        {noteData.map((note, index) => (
-          <NoteCard key={index} note={note} />
-        ))}
-      </Masonry>
-    </div>
+    <>
+      <div className="min-h-28 flex space-x-4 p-4 pt-12 bg-gradient-to-b from-rose-300 to-rose-200">
+        <div className="flex-col space-y-2 flex-grow">
+          <div className="flex space-x-2"><Search className="h-4 w-4 text-gray-500" /><Label htmlFor="query">Search</Label></div>
+          <Input type="text" id="query" placeholder="Search" />
+        </div>
+        <div className="flex-col space-y-2">
+          <Label htmlFor="query" className="text-nowrap">
+            Start date
+          </Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[240px] justify-start text-left font-normal",
+                  !startDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon />
+                {startDate ? (
+                  format(startDate, "PPP")
+                ) : (
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={startDate}
+                onSelect={setStartDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div className="flex-col space-y-2">
+          <Label htmlFor="query" className="text-nowrap">
+            End date
+          </Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[240px] justify-start text-left font-normal",
+                  !endDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon />
+                {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={endDate}
+                onSelect={setEndDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+      <div className="m-4">
+        <Masonry
+          breakpointCols={breakpoints}
+          className="my-masonry-grid"
+          columnClassName="my-masonry-grid_column"
+        >
+          {noteData.map((note, index) => (
+            <NoteCard key={index} note={note} />
+          ))}
+        </Masonry>
+      </div>
+    </>
   );
 }
 

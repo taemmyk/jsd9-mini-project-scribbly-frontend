@@ -7,8 +7,8 @@ const initialUser = {
   roles: ['user', 'member'],
 };
 
-// const UserContext = createContext({ user: initialUser, });
-const UserContext = createContext(null);
+const UserContext = createContext({ user: initialUser, });
+// const UserContext = createContext(null);
 
 
 export default UserContext;
