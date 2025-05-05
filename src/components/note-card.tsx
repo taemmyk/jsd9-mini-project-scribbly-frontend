@@ -34,14 +34,29 @@ export function NoteCard({
           <div className="flex justify-between">
             <p className="italic">{new Date().toLocaleDateString()}</p>
             <div className="flex justify-end-safe items-center space-x-2">
-              <Button variant="outline" size="icon" aria-label="Pin note" className="border-0 :hover:text-teal-500">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Pin note"
+                className="border-0"
+              >
                 <Pin className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon" aria-label="Edit note" className="border-0 :hover:text-teal-500">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Edit note"
+                className="border-0"
+              >
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon" aria-label="Delete note" className="border-0 :hover:text-teal-500">
-                <Trash className="h-4 w-4 text-destructive" />
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Delete note"
+                className="border-0"
+              >
+                <Trash className="h-4 w-4" />
               </Button>
             </div>
           </div>

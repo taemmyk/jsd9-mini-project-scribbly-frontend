@@ -2,8 +2,9 @@ import React, { useContext, ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { CircleUserRound, Smile } from "lucide-react";
+import { UserRound, Smile } from "lucide-react";
 import UserContext from "./contexts/user-context";
+import { Button } from "./ui/button";
 
 export default function layout({ children }: { children: ReactNode }) {
   const context = useContext(UserContext);
@@ -26,7 +27,7 @@ export default function layout({ children }: { children: ReactNode }) {
               </div>
               <div>
                 <p className="text-sm text-rose-500">{dayName}</p>
-                <p className="text-sm text-rose-500">{monthName}</p>
+                <p className="text-sm font-bold text-rose-800">{monthName}</p>
               </div>
             </div>
           </div>
@@ -38,8 +39,9 @@ export default function layout({ children }: { children: ReactNode }) {
               </>
             ) : (
               <>
-                <CircleUserRound className="h-10 w-10 rounded-full bg-rose-400 p-2" />
-                <p>Login</p>
+                <Button className="bg-rose-400">
+                  <UserRound className="h-10 w-10" /> Log in
+                </Button>
               </>
             )}
           </div>
