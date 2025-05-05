@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, ReactNode } from "react";
 import UserContext from "./user-context";
 
-function UserProvider({ children }) {
+function UserProvider({ children }: { children: ReactNode }) {
   const userContextValue = useContext(UserContext);
 
   return (

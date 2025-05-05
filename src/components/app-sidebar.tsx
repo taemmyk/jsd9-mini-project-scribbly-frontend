@@ -18,8 +18,6 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import UserContext from "./contexts/user-context";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 const items = [
   {
