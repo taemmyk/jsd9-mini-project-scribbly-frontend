@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Home, Settings, Tag, Hash } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -41,17 +41,20 @@ const tags = ["Personal", "Work", "Ideas", "Reading"];
 export function AppSidebar() {
   const context = useContext(UserContext);
   const user = context ? context.user : null;
-
+  const [tags, setTags] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
   return (
     <Sidebar>
       <SidebarContent className="flex flex-col justify-between h-full">
         <div>
-          <div className="my-12 flex justify-center">
+          <div className="my-18 flex justify-center">
             <h1
               style={{ fontFamily: '"Gluten", cursive' }}
               className="text-4xl text-rose-400"
             >
-              Noteapp
+              Scribbly
             </h1>
           </div>
           <SidebarGroup>

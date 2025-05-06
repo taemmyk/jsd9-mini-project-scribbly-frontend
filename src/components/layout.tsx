@@ -2,28 +2,9 @@ import React, { useContext, ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { UserRound, Smile } from "lucide-react";
+import { Smile } from "lucide-react";
 import UserContext from "./contexts/user-context";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function layout({ children }: { children: ReactNode }) {
   const context = useContext(UserContext);
@@ -35,37 +16,38 @@ export default function layout({ children }: { children: ReactNode }) {
   const displayName = user?.name?.split(" ")[0];
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main className="w-full">
-        <header className="w-full bg-rose-300 flex items-center justify-between px-4 py-2">
-          <SidebarTrigger />
-          <div className="flex gap-x-2 items-center">
-            <div className="flex gap-x-2 items-center">
-              <div className="flex justify-center items-center rounded-full bg-rose-400 w-8 h-8 font-semibold text-center">
-                <p className="text-md font-bold text-rose-800">{dayNumber}</p>
+      {user ? (
+        <>
+          <AppSidebar />
+          <main className="w-full">
+            <header className="w-full bg-rose-300 flex items-center justify-between px-4 py-2">
+              <SidebarTrigger />
+              <div className="flex gap-x-2 items-center">
+                <div className="flex gap-x-2 items-center">
+                  <div className="flex justify-center items-center rounded-full bg-rose-400 w-8 h-8 font-semibold text-center">
+                    <p className="text-md font-bold text-rose-800">{dayNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-rose-500">{dayName}</p>
+                    <p className="text-sm font-bold text-rose-800">{monthName}</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-rose-500">{dayName}</p>
-                <p className="text-sm font-bold text-rose-800">{monthName}</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2 text-rose-950">
-            {user != null ? (
-              <>
+              <div className="flex items-center space-x-2 text-rose-950">
                 <Smile className="h-10 w-10 rounded-full bg-rose-400 p-2" />
                 <p className="font-semibold">{displayName}</p>
-              </>
-            ) : (
-              <>
-                
-              </>
-            )}
-          </div>
-        </header>
-        {children}
-        <Outlet />
-      </main>
+              </div>
+            </header>
+            {children}
+            <Outlet />
+          </main>
+        </>
+      ) : (
+        <main className="w-full">
+          {children}
+          <Outlet />
+        </main>
+      )}
     </SidebarProvider>
   );
 }

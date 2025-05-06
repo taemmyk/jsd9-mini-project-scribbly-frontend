@@ -11,7 +11,7 @@ const api = axios.create({
 
 export const getAllNotes = async () => {
   try {
-    const response = await api.get("/mongo/notes");
+    const response = await api.get("/mongo/notes/public");
     return response.data;
   } catch (err) {
     throw err;
