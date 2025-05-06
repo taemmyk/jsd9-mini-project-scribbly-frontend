@@ -4,7 +4,26 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { UserRound, Smile } from "lucide-react";
 import UserContext from "./contexts/user-context";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function layout({ children }: { children: ReactNode }) {
   const context = useContext(UserContext);
@@ -39,9 +58,7 @@ export default function layout({ children }: { children: ReactNode }) {
               </>
             ) : (
               <>
-                <Button className="bg-rose-400">
-                  <UserRound className="h-10 w-10" /> Log in
-                </Button>
+                
               </>
             )}
           </div>
