@@ -17,6 +17,6 @@ export const updateNotePublic = async (id: string, payload: Partial<UpdatePublic
 };
 
 export const deleteNote = async (id: string) => {
-  const response = await api.delete(`/mongo/notes/${id}`);
+  const response = await api.delete(`/mongo/notes/delete/${id}`);
   return response.data;
 };

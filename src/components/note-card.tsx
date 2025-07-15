@@ -7,30 +7,32 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Pin, Pencil, Trash, Lock, Unlock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
-import { updateNotePin, updateNotePublic, deleteNote } from "@/services/note.service";
+import {
+  updateNotePin,
+  updateNotePublic,
+  deleteNote,
+} from "@/services/note.service";
 import { Note } from "@/types/note";
 
-export function NoteCard({
-  note ,
-}: {
-  note: {
-    _id: string;
-    title: string;
-    content: string;
-    tags: string[];
-    userId: string;
-    isPinned: boolean;
-    isPublic: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-}) {
+type NoteCardProps = {
+  note: Note;
+};
+
+export const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
   const [isPinned, setIsPinned] = useState(note.isPinned);
   const [isPublic, setIsPublic] = useState(note.isPublic);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handlePinToggle = async () => {
     const newPinned = !isPinned;
@@ -57,8 +59,7 @@ export function NoteCard({
   const handleDelete = async () => {
     try {
       await deleteNote(note._id);
-      // setOpenDialog(false);
-      // Optionally: refresh or notify parent to remove the note from UI
+      setOpenDialog(false);
     } catch (err) {
       console.error("Failed to delete note", err);
     }
@@ -110,19 +111,39 @@ export function NoteCard({
               >
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Delete note"
-                className="border-0"
-                onClick={handleDelete}
-              >
-                <Trash className="h-4 w-4" />
-              </Button>
+              <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Delete note"
+                    className="border-0"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent aria-describedby="">
+                  <DialogTitle>Confirm Deletion "{note.title}"</DialogTitle>
+                  <DialogHeader>
+                    Are you sure you want to delete this note?
+                  </DialogHeader>
+                  <div className="flex justify-end">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setOpenDialog(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button variant="destructive" onClick={handleDelete}>
+                      Delete
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>
       </CardFooter>
     </Card>
   );
-}
+};

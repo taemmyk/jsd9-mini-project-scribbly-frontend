@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, FC } from "react";
+import { useState, useEffect, ChangeEvent, FC } from "react";
 import { NoteCard } from "@/components/note-card";
 import Masonry from "react-masonry-css";
 import { Input } from "@/components/ui/input";
