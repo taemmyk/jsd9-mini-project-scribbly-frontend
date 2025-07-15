@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 function index() {
   const navigate = useNavigate();
   const handleGetStartedClick = () => {
-    navigate("/user");
+    // navigate("/user");
+    navigate("/");
   };
 
   return (

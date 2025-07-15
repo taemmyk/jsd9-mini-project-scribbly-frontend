@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, ChangeEvent, FC } from "react";
 import { NoteCard } from "@/components/note-card";
 import Masonry from "react-masonry-css";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { format } from "date-fns";
 import { Search } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-
-import { getAllNotes } from "../services/api";
+import { getAllNotes } from "../services/note.service";
+import { Note } from "@/types/note";
 
 const breakpoints = {
   default: 3,
@@ -17,13 +15,11 @@ const breakpoints = {
   1024: 2,
 };
 
-function Home() {
-  const [notes, setNotes] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const Home: FC = () => {
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -32,7 +28,7 @@ function Home() {
       try {
         const data = await getAllNotes();
         setNotes(data.notes || []);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message || "Failed to load notes.");
       } finally {
         setLoading(false);
@@ -42,28 +38,17 @@ function Home() {
     fetchNotes();
   }, []);
 
-  // Event handler for search input
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
-    // TODO: implement your search filtering logic
   };
 
-  // Event handlers for date pickers
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
-  };
+  const filteredNotes = notes.filter((note) =>
+    note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.content?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
-  };
-
-  if (loading) {
-    return <div>Loading notes...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div>Loading notes...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
@@ -73,23 +58,30 @@ function Home() {
             <Search className="h-4 w-4 text-gray-500" />
             <Label htmlFor="query">Search</Label>
           </div>
-          <Input type="text" id="query" placeholder="Search" />
+          <Input
+            type="text"
+            id="query"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
         </div>
-        <Button>Search</Button>
+        <Button disabled>Search</Button>
       </div>
+
       <div className="m-4">
         <Masonry
           breakpointCols={breakpoints}
           className="my-masonry-grid"
           columnClassName="my-masonry-grid_column"
         >
-          {notes.map((note) => (
+          {filteredNotes.map((note) => (
             <NoteCard key={note._id} note={note} />
           ))}
         </Masonry>
       </div>
     </>
   );
-}
+};
 
 export default Home;

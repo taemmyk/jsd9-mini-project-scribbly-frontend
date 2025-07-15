@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 
 export function NoteCard({
-  note,
+  note ,
 }: {
   note: {
     _id: string;
@@ -32,12 +32,12 @@ export function NoteCard({
 
   const handlePinToggle = () => {
     setIsPinned(!isPinned);
-    // console.log(`Toggling pin for note: ${note._id}`);
+    console.log(`Toggling pin for note: ${note._id}`);
   };
 
   const handlePublicToggle = () => {
     setIsPublic(!isPublic);
-    // console.log(`Toggling public status for note: ${note._id}`);
+    console.log(`Toggling public status for note: ${note._id}`);
   };
 
   return (
@@ -55,7 +55,7 @@ export function NoteCard({
         <div className="block w-full">
           <Separator className="bg-rose-300" />
           <div className="flex justify-between items-center">
-            <p className="italic">
+            <p className="italic font-semibold">
               {new Date(note.createdAt).toLocaleDateString()}
             </p>
             <div className="flex justify-end-safe items-center space-x-2">

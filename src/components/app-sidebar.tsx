@@ -22,7 +22,7 @@ import UserContext from "./contexts/user-context";
 const items = [
   {
     title: "Home",
-    url: "/",
+    url: "/home",
     icon: Home,
   },
 ];
