@@ -1,12 +1,14 @@
 import { createContext } from "react";
+import { UserType } from "@/types/user";
 
-const initialUser = {
-  userId: "68182ae5b2645f657ba2d5e6",
-  name: "Tester tester1",
-  username: "tester1@example.com",
-};
+interface UserContextType {
+  user: UserType | null;
+  setUser: (user: UserType | null) => void;
+}
 
-const UserContext = createContext({ user: initialUser });
-// const UserContext = createContext({ user: null });
+const UserContext = createContext<UserContextType>({
+  user: null,
+  setUser: () => {},
+});
 
 export default UserContext;

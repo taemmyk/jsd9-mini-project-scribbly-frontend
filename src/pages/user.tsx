@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback, ChangeEvent, FC } from "react";
+import { useState, useEffect, useCallback, FC, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import UserContext from "@/components/contexts/user-context";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,13 +13,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
+import api from "@/services/api";
 
 const User: FC = () => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showLoginCard, setShowLoginCard] = useState<boolean>(true);
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showLoginCard, setShowLoginCard] = useState(true);
+
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+
+  const [registerError, setRegisterError] = useState("");
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword((prev) => !prev);
@@ -25,19 +41,62 @@ const User: FC = () => {
 
   const switchCard = useCallback(() => {
     setShowLoginCard((prev) => !prev);
+    setLoginError("");
+    setRegisterError("");
   }, []);
 
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+  const handleLogin = async () => {
+    try {
+      const res = await api.post("/mongo/login", {
+        email: loginEmail,
+        password: loginPassword,
+      });
 
-  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(e.target.value);
+      console.log("✅ Login success:", res.data);
+
+      const userData = res.data.user;
+      setUser(userData);
+
+      navigate("/home");
+    } catch (err: any) {
+      console.error("❌ Login error:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Login failed");
+    }
   };
 
   useEffect(() => {
-    setPasswordsMatch(password === confirmPassword);
-  }, [password, confirmPassword]);
+    setPasswordsMatch(signupPassword === confirmPassword);
+  }, [signupPassword, confirmPassword]);
+
+  const handleRegister = async () => {
+    if (!passwordsMatch) return;
+
+    setRegisterError("");
+    setIsRegistering(true);
+
+    try {
+      const res = await api.post("/mongo/register", {
+        name,
+        email,
+        password: signupPassword,
+      });
+
+      console.log("✅ Register success:", res.data);
+
+      alert("Register successful! Please login.");
+      setShowLoginCard(true);
+
+      setName("");
+      setEmail("");
+      setSignupPassword("");
+      setConfirmPassword("");
+    } catch (err: any) {
+      console.error("❌ Register error:", err.response?.data || err.message);
+      setRegisterError(err.response?.data?.message || "Register failed");
+    } finally {
+      setIsRegistering(false);
+    }
+  };
 
   return (
     <div className="w-full h-full flex justify-center items-center">
@@ -54,34 +113,39 @@ const User: FC = () => {
               </span>
             </CardTitle>
             <CardDescription>
-              Enter your username and password to access your account.
+              Enter your email and password to access your account.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="space-y-1">
-              <Label htmlFor="username" className="text-right text-rose-800">
-                Username
+              <Label htmlFor="email" className="text-right text-rose-800">
+                Email
               </Label>
               <Input
-                id="username"
+                id="email"
                 type="text"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="col-span-3"
               />
             </div>
             <div className="space-y-1 relative">
-              <Label htmlFor="login-password" className="text-right text-rose-800">
+              <Label
+                htmlFor="login-password"
+                className="text-right text-rose-800"
+              >
                 Password
               </Label>
               <Input
                 id="login-password"
                 type={showPassword ? "text" : "password"}
-                className="col-span-3"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
               />
               <Button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute inset-y-4 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                className="absolute inset-y-4 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
                 variant="ghost"
                 size="icon"
               >
@@ -90,15 +154,15 @@ const User: FC = () => {
                 ) : (
                   <Eye className="h-5 w-5" />
                 )}
-                <span className="sr-only">
-                  {showPassword ? "Hide password" : "Show password"}
-                </span>
               </Button>
             </div>
+            {loginError && <p className="text-red-600 text-sm">{loginError}</p>}
           </CardContent>
           <CardFooter>
             <div className="flex flex-col justify-start">
-              <Button className="w-fit">Login</Button>
+              <Button className="w-fit" onClick={handleLogin}>
+                Login
+              </Button>
               <Button variant="link" className="w-fit" onClick={switchCard}>
                 Make Your Scribbly Account!
               </Button>
@@ -117,9 +181,7 @@ const User: FC = () => {
                 Scribbly
               </span>
             </CardTitle>
-            <CardDescription>
-              Create a new account to get started.
-            </CardDescription>
+            <CardDescription>Create a new account to get started.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="space-y-1">
@@ -129,8 +191,8 @@ const User: FC = () => {
               <Input
                 id="name"
                 type="text"
-                placeholder="John Doe"
-                className="col-span-3"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div className="space-y-1">
@@ -140,8 +202,8 @@ const User: FC = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder="your@email.com"
-                className="col-span-3"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="space-y-1">
@@ -151,19 +213,22 @@ const User: FC = () => {
               <Input
                 id="password"
                 type="password"
-                className="col-span-3"
-                onChange={handlePasswordChange}
+                value={signupPassword}
+                onChange={(e) => setSignupPassword(e.target.value)}
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="confirm-password" className="text-right text-orange-800">
+              <Label
+                htmlFor="confirm-password"
+                className="text-right text-orange-800"
+              >
                 Confirm Password
               </Label>
               <Input
                 id="confirm-password"
                 type="password"
-                className="col-span-3"
-                onChange={handleConfirmPasswordChange}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               {!passwordsMatch && (
                 <p className="text-rose-700 text-sm mt-1">
@@ -171,11 +236,18 @@ const User: FC = () => {
                 </p>
               )}
             </div>
+            {registerError && (
+              <p className="text-red-600 text-sm">{registerError}</p>
+            )}
           </CardContent>
           <CardFooter>
             <div className="flex flex-col justify-start">
-              <Button className="w-fit" disabled={!passwordsMatch}>
-                Create My Account
+              <Button
+                className="w-fit"
+                disabled={!passwordsMatch || isRegistering}
+                onClick={handleRegister}
+              >
+                {isRegistering ? "Registering..." : "Create My Account"}
               </Button>
               <Button variant="link" className="w-fit" onClick={switchCard}>
                 Let me log in!
