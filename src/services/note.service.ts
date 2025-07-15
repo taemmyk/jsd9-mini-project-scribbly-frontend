@@ -1,7 +1,22 @@
 import api from "./api";
-import { Note } from "@/types/note";
+import { Note, UpdatePinPayload, UpdatePublicPayload } from "@/types/note";
 
 export const getAllNotes = async (): Promise<{ notes: Note[] }> => {
   const response = await api.get<{ notes: Note[] }>("/mongo/notes/public");
+  return response.data;
+};
+
+export const updateNotePin = async (id: string, payload: Partial<UpdatePinPayload>) => {
+  const response = await api.patch(`/mongo/notes/update-pin/${id}`, payload);
+  return response.data;
+};
+
+export const updateNotePublic = async (id: string, payload: Partial<UpdatePublicPayload>) => {
+  const response = await api.patch(`/mongo/notes/update-public/${id}`, payload);
+  return response.data;
+};
+
+export const deleteNote = async (id: string) => {
+  const response = await api.delete(`/mongo/notes/${id}`);
   return response.data;
 };

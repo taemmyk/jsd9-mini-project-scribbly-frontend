@@ -11,6 +11,8 @@ import { Pin, Pencil, Trash, Lock, Unlock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
+import { updateNotePin, updateNotePublic, deleteNote } from "@/services/note.service";
+import { Note } from "@/types/note";
 
 export function NoteCard({
   note ,
@@ -30,16 +32,37 @@ export function NoteCard({
   const [isPinned, setIsPinned] = useState(note.isPinned);
   const [isPublic, setIsPublic] = useState(note.isPublic);
 
-  const handlePinToggle = () => {
-    setIsPinned(!isPinned);
-    console.log(`Toggling pin for note: ${note._id}`);
+  const handlePinToggle = async () => {
+    const newPinned = !isPinned;
+    setIsPinned(newPinned);
+    try {
+      await updateNotePin(note._id, { isPinned: newPinned });
+    } catch (err) {
+      console.error("Failed to update pin status", err);
+      setIsPinned(!newPinned);
+    }
   };
 
-  const handlePublicToggle = () => {
-    setIsPublic(!isPublic);
-    console.log(`Toggling public status for note: ${note._id}`);
+  const handlePublicToggle = async () => {
+    const newPublic = !isPublic;
+    setIsPublic(newPublic);
+    try {
+      await updateNotePublic(note._id, { isPublic: newPublic });
+    } catch (err) {
+      console.error("Failed to update public status", err);
+      setIsPublic(!newPublic); // rollback if fail
+    }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteNote(note._id);
+      // setOpenDialog(false);
+      // Optionally: refresh or notify parent to remove the note from UI
+    } catch (err) {
+      console.error("Failed to delete note", err);
+    }
+  };
   return (
     <Card className="w-full bg-rose-200 border-2 border-rose-300">
       <CardHeader>
@@ -92,6 +115,7 @@ export function NoteCard({
                 size="icon"
                 aria-label="Delete note"
                 className="border-0"
+                onClick={handleDelete}
               >
                 <Trash className="h-4 w-4" />
               </Button>

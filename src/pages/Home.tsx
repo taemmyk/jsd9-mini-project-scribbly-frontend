@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getAllNotes } from "../services/note.service";
+import { getAllNotes } from "@/services/note.service";
 import { Note } from "@/types/note";
 
 const breakpoints = {
