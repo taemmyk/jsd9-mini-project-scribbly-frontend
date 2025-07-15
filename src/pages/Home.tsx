@@ -1,12 +1,13 @@
-import { useState, useEffect, ChangeEvent, FC } from "react";
+import { useState, useEffect, useContext, ChangeEvent, FC } from "react";
 import { NoteCard } from "@/components/note-card";
 import Masonry from "react-masonry-css";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getAllNotes } from "@/services/note.service";
+import { getNotesByMe } from "@/services/note.service";
 import { Note } from "@/types/note";
+import UserContext from "../components/contexts/user-context";
 
 const breakpoints = {
   default: 3,
@@ -20,13 +21,14 @@ const Home: FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchNotes = async () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await getAllNotes();
+        const data = await getNotesByMe(user?._id as string);
         setNotes(data.notes || []);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -75,15 +77,19 @@ const Home: FC = () => {
       </div>
 
       <div className="m-4">
-        <Masonry
-          breakpointCols={breakpoints}
-          className="my-masonry-grid"
-          columnClassName="my-masonry-grid_column"
-        >
-          {filteredNotes.map((note) => (
-            <NoteCard key={note._id} note={note} />
-          ))}
-        </Masonry>
+        {filteredNotes.length > 0 ? (
+          <Masonry
+            breakpointCols={breakpoints}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
+            {filteredNotes.map((note) => (
+              <NoteCard key={note._id} note={note} />
+            ))}
+          </Masonry>
+        ) : (
+          <p className="text-center">No note yet</p>
+        )}
       </div>
     </>
   );

@@ -6,6 +6,11 @@ export const getAllNotes = async (): Promise<{ notes: Note[] }> => {
   return response.data;
 };
 
+export const getNotesByMe = async (id: string): Promise<{ notes: Note[] }> => {
+  const response = await api.get<{ notes: Note[] }>(`/mongo/notes/${id}`);
+  return response.data;
+};
+
 export const updateNotePin = async (id: string, payload: Partial<UpdatePinPayload>) => {
   const response = await api.patch(`/mongo/notes/update-pin/${id}`, payload);
   return response.data;
