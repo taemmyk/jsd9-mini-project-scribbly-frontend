@@ -1,9 +1,17 @@
 import { useContext, ReactNode } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import { Smile } from "lucide-react";
 import UserContext from "./contexts/user-context";
+import api from "@/services/api";
+import { AxiosError } from "axios";
 
 export default function Layout({ children }: { children?: ReactNode }) {
   const { user } = useContext(UserContext);
@@ -11,7 +19,27 @@ export default function Layout({ children }: { children?: ReactNode }) {
   const dayNumber = today.getDate();
   const dayName = today.toLocaleString("en-US", { weekday: "long" });
   const monthName = today.toLocaleString("en-US", { month: "long" });
-  const displayName = user?.name?.split(" ")[0];
+  const displayName = user?.email;
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
+
+  const handleLogout = async () => {
+  try {
+    await api.post("/mongo/logout");
+    setUser(null);
+    navigate("/");
+  } catch (err: unknown) {
+    if (err && typeof err === "object" && "response" in err) {
+      const error = err as AxiosError<{ message: string }>;
+      console.error("❌ Logout error:", error.response?.data || error.message);
+      alert("Logout failed: " + (error.response?.data?.message || "Unknown error"));
+    } else {
+      console.error("❌ Logout error:", err);
+      alert("Logout failed");
+    }
+  }
+};
+
 
   return (
     <SidebarProvider>
@@ -30,10 +58,28 @@ export default function Layout({ children }: { children?: ReactNode }) {
                   <p className="text-sm font-bold text-rose-800">{monthName}</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-2 text-rose-950">
-                <Smile className="h-10 w-10 rounded-full bg-rose-400 p-2" />
-                <p className="font-semibold">{displayName}</p>
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <div className="flex space-x-2">
+                    <Smile className="h-10 w-10 rounded-full bg-rose-400 p-2" />
+                    <Button
+                      variant="ghost"
+                      className="flex items-center space-x-2 text-rose-950 px-2 py-1"
+                    >
+                      {displayName}
+                    </Button>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-40 p-2 bg-transparent border-0">
+                  <Button
+                    variant="destructive"
+                    className="w-full"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </Button>
+                </PopoverContent>
+              </Popover>
             </header>
             {children}
             <Outlet />
