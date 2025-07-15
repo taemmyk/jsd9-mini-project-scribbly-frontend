@@ -28,8 +28,12 @@ const Home: FC = () => {
       try {
         const data = await getAllNotes();
         setNotes(data.notes || []);
-      } catch (err: any) {
-        setError(err.message || "Failed to load notes.");
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to load notes.");
+        }
       } finally {
         setLoading(false);
       }
@@ -42,9 +46,10 @@ const Home: FC = () => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredNotes = notes.filter((note) =>
-    note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    note.content?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredNotes = notes.filter(
+    (note) =>
+      note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.content?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) return <div>Loading notes...</div>;

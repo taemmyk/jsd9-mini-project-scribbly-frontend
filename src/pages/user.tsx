@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import api from "@/services/api";
+import axios from "axios";
 
 const User: FC = () => {
   const navigate = useNavigate();
@@ -58,9 +59,16 @@ const User: FC = () => {
       setUser(userData);
 
       navigate("/home");
-    } catch (err: any) {
-      console.error("❌ Login error:", err.response?.data || err.message);
-      alert(err.response?.data?.message || "Login failed");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("❌ Login error:", err.message);
+        alert(err.message);
+      }
+
+      if (axios.isAxiosError(err)) {
+        console.error("❌ Login error:", err.response?.data || err.message);
+        alert(err.response?.data?.message || "Login failed");
+      }
     }
   };
 
@@ -90,9 +98,17 @@ const User: FC = () => {
       setEmail("");
       setSignupPassword("");
       setConfirmPassword("");
-    } catch (err: any) {
-      console.error("❌ Register error:", err.response?.data || err.message);
-      setRegisterError(err.response?.data?.message || "Register failed");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        console.error("❌ Register error:", err.response?.data || err.message);
+        setRegisterError(err.response?.data?.message || "Register failed");
+      } else if (err instanceof Error) {
+        console.error("❌ Register error:", err.message);
+        setRegisterError("Register failed: " + err.message);
+      } else {
+        console.error("❌ Unknown error:", err);
+        setRegisterError("An unexpected error occurred");
+      }
     } finally {
       setIsRegistering(false);
     }
@@ -181,7 +197,9 @@ const User: FC = () => {
                 Scribbly
               </span>
             </CardTitle>
-            <CardDescription>Create a new account to get started.</CardDescription>
+            <CardDescription>
+              Create a new account to get started.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="space-y-1">
