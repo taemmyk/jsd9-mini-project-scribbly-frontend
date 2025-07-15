@@ -15,7 +15,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Home />, // Use AuthCheck as the root element
+      element: <Layout />, // Use AuthCheck as the root element
       children: [
         { path: "/", element: <Splash /> },
         { path: "/user", element: <User /> },
