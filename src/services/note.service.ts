@@ -25,3 +25,8 @@ export const deleteNote = async (id: string) => {
   const response = await api.delete(`/mongo/notes/delete/${id}`);
   return response.data;
 };
+
+export const getTagsByMe = async (): Promise<{ tags: string[] }> => {
+  const response = await api.get<{ tags: string[] }>("/mongo/notes/tags/me");
+  return response.data;
+};
