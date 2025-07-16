@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Home, Settings, Tag, Hash } from "lucide-react";
+import { ChevronDown, Home, StickyNote, Settings, Tag, Hash, DoorOpen, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Sidebar,
@@ -16,7 +16,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
 import UserContext from "./contexts/user-context";
 
 const items = [
@@ -25,13 +24,28 @@ const items = [
     url: "/home",
     icon: Home,
   },
+  {
+    title: "New note",
+    url: "/note/new",
+    icon: StickyNote,
+  },
 ];
 
-const loggedInItems = [
+const accountItems = [
+  {
+    title: "View as public",
+    url: "#",
+    icon: DoorOpen,
+  },
   {
     title: "Settings",
     url: "/settings",
     icon: Settings,
+  },
+  {
+    title: "Logout",
+    url: "#",
+    icon: LogOut,
   },
 ];
 
@@ -116,7 +130,7 @@ export function AppSidebar() {
                 </SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {loggedInItems.map((item) => (
+                    {accountItems.map((item) => (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
                           <Link

@@ -87,7 +87,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
                 pressed={isPinned}
                 onPressedChange={handlePinToggle}
                 aria-label={isPinned ? "Unpin note" : "Pin note"}
-                className="border-0 hover:bg-rose-400 hover:text-rose-50 data-[state=off]:bg-rose-300 data-[state=off]:text-rose-950 data-[state=on]:bg-transparent data-[state=on]:text-rose-950 data-[state=on]:hover:bg-rose-400 data-[state=on]:hover:text-rose-50 data-[state=off]:hover:bg-rose-400 data-[state=off]:hover:text-rose-50"
+                className="border-0 hover:bg-rose-400 hover:text-rose-50 data-[state=off]:bg-transparent data-[state=off]:text-rose-950 data-[state=on]:bg-rose-300 data-[state=on]:text-rose-950 data-[state=on]:hover:bg-rose-400 data-[state=on]:hover:text-rose-50 data-[state=off]:hover:bg-rose-400 data-[state=off]:hover:text-rose-50"
               >
                 <Pin className="h-4 w-4" />
               </Toggle>
@@ -95,7 +95,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
                 pressed={isPublic}
                 onPressedChange={handlePublicToggle}
                 aria-label={isPublic ? "Private note" : "Public note"}
-                className="border-0 hover:bg-rose-400 hover:text-rose-50 data-[state=off]:bg-rose-300 data-[state=off]:text-rose-950 data-[state=on]:bg-transparent data-[state=on]:text-rose-950 data-[state=on]:hover:bg-rose-400 data-[state=on]:hover:text-rose-50 data-[state=off]:hover:bg-rose-400 data-[state=off]:hover:text-rose-50"
+                className="border-0 hover:bg-rose-400 hover:text-rose-50 data-[state=off]:bg-transparent data-[state=off]:text-rose-950 data-[state=on]:bg-rose-300 data-[state=on]:text-rose-950 data-[state=on]:hover:bg-rose-400 data-[state=on]:hover:text-rose-50 data-[state=off]:hover:bg-rose-400 data-[state=off]:hover:text-rose-50"
               >
                 {isPublic ? (
                   <Unlock className="h-4 w-4" />

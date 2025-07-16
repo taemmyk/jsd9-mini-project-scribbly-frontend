@@ -5,6 +5,7 @@ import Splash from "./pages/splash";
 import User from "./pages/user";
 import Home from "./pages/home";
 import Settings from "./pages/settings";
+import NoteNew from "./pages/note-new";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       { path: "/user", element: <User /> },
       { path: "/home", element: <ProtectedRoute element={<Home />} /> },
       { path: "/settings", element: <ProtectedRoute element={<Settings />} /> },
+      { path: "/note/new", element: <ProtectedRoute element={<NoteNew />} /> },
     ],
   },
 ]);
