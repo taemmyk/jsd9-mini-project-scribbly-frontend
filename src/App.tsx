@@ -26,6 +26,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Splash /> },
       { path: "/user", element: <User /> },
       { path: "/home", element: <ProtectedRoute element={<Home />} /> },
+      { path: "/tags/me/:tag", element: <ProtectedRoute element={<Home />} /> },
       { path: "/settings", element: <ProtectedRoute element={<Settings />} /> },
       { path: "/note/new", element: <ProtectedRoute element={<NoteNew />} /> },
     ],

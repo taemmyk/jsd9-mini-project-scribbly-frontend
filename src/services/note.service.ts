@@ -11,6 +11,11 @@ export const getNotesByMe = async (id: string): Promise<{ notes: Note[] }> => {
   return response.data;
 };
 
+export const editNote = async (id: string, payload: Partial<Note>) => {
+  const response = await api.patch<{ note: Note }>(`/mongo/notes/edit/${id}`, payload);
+  return response.data;
+};
+
 export const updateNotePin = async (id: string, payload: Partial<UpdatePinPayload>) => {
   const response = await api.patch(`/mongo/notes/update-pin/${id}`, payload);
   return response.data;
@@ -29,4 +34,10 @@ export const deleteNote = async (id: string) => {
 export const getTagsByMe = async (): Promise<{ tags: string[] }> => {
   const response = await api.get<{ tags: string[] }>("/mongo/notes/tags/me");
   return response.data;
+};
+
+export const getNotesByTag = async (tag: string) => {
+  const res = await fetch(`/mongo/notes/tags/me/${tag}`);
+  if (!res.ok) throw new Error("Failed to fetch notes by tag");
+  return res.json();
 };
