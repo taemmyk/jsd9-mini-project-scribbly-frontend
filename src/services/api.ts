@@ -1,6 +1,11 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = import.meta.env.API_BASE_URL;
+
+if (!API_BASE_URL) {
+  console.error("API_BASE_URL is not defined");
+  throw new Error("API_BASE_URL is not defined");
+}
 
 const api = axios.create({
   baseURL: API_BASE_URL,
