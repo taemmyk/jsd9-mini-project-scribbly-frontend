@@ -36,8 +36,7 @@ export const getTagsByMe = async (): Promise<{ tags: string[] }> => {
   return response.data;
 };
 
-export const getNotesByTag = async (tag: string) => {
-  const res = await fetch(`/mongo/notes/tags/me/${tag}`);
-  if (!res.ok) throw new Error("Failed to fetch notes by tag");
-  return res.json();
+export const getNotesByTag = async (tag: string): Promise<{ notes: Note[] }> => {
+  const response = await api.get(`/mongo/notes/tags/me/${tag}`);
+  return response.data;
 };

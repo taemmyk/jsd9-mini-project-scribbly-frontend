@@ -32,7 +32,7 @@ import { Note } from "@/types/note";
 
 type NoteCardProps = {
   note: Note;
-  onUpdated?: () => void; // callback to refresh note list
+  onUpdated?: () => void;
 };
 
 export const NoteCard: React.FC<NoteCardProps> = ({ note, onUpdated }) => {
@@ -99,8 +99,8 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onUpdated }) => {
     <Card className="w-full bg-rose-200 border-2 border-rose-300">
       <CardHeader>
         <CardTitle
-          className={`text-rose-800 text-2xl py-1 pl-2 rounded-lg ${
-            isPinned ? "bg-rose-300" : ""
+          className={`text-rose-800 text-2xl py-1 rounded-lg ${
+            isPinned ? "bg-rose-300 pl-2" : ""
           }`}
         >
           {note.title}

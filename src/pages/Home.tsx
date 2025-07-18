@@ -1,4 +1,3 @@
-// home.tsx
 import { useState, useEffect, useContext, ChangeEvent, FC, useCallback } from "react";
 import { NoteCard } from "@/components/note-card";
 import Masonry from "react-masonry-css";
