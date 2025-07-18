@@ -1,11 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-const API_BASE_URL = import.meta.env.API_BASE_URL;
-
-if (!API_BASE_URL) {
-  console.error("API_BASE_URL is not defined");
-  throw new Error("API_BASE_URL is not defined");
-}
+const API_BASE_URL = "https://jsd9-mini-project-scribbly-backend.onrender.com";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
