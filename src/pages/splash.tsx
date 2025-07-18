@@ -10,7 +10,7 @@ function Splash() {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
-    console.log("🔍 UserContext from splash:", user);
+    // console.log("🔍 UserContext from splash:", user);
 
     // Redirect only if user is truly logged in
     if (user && user.name && user.email) {
