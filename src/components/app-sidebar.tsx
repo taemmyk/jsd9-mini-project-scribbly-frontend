@@ -68,6 +68,10 @@ export function AppSidebar() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleViewAsPublic = () => {
+  navigate("/home?public=true");
+};
+
   const handleLogout = async () => {
     try {
       await logoutUser();
@@ -98,7 +102,7 @@ export function AppSidebar() {
   const accountItems: SidebarItem[] = [
     {
       title: "View as public",
-      url: "#",
+      onClick: handleViewAsPublic,
       icon: DoorOpen,
     },
     {

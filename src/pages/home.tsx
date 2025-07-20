@@ -1,10 +1,22 @@
-import { useState, useEffect, useContext, ChangeEvent, FC, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useContext,
+  ChangeEvent,
+  FC,
+  useCallback,
+} from "react";
+import { useSearchParams } from "react-router-dom";
 import { NoteCard } from "@/components/note-card";
 import Masonry from "react-masonry-css";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
-import { getNotesByMe, getNotesByTag } from "@/services/note.service";
+import {
+  getNotesByMe,
+  getNotesByTag,
+  getPublicNotesByMe,
+} from "@/services/note.service";
 import { Note } from "@/types/note";
 import UserContext from "../components/contexts/user-context";
 import { useParams } from "react-router-dom";
@@ -23,15 +35,22 @@ const Home: FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { user } = useContext(UserContext);
   const { tag } = useParams();
+  const [searchParams] = useSearchParams();
+  const isPublic = searchParams.get("public") === "true";
 
   const fetchNotes = useCallback(async () => {
-    if (!user?._id) return;
+    const userId = user?._id;
+    if (!userId) return;
+
     setLoading(true);
     setError(null);
+
     try {
-      const data = tag
+      const data = isPublic
+        ? await getPublicNotesByMe(userId)
+        : tag
         ? await getNotesByTag(tag)
-        : await getNotesByMe(user._id);
+        : await getNotesByMe(userId);
 
       const notesArray: Note[] = data.notes || [];
 
@@ -45,7 +64,7 @@ const Home: FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [tag, user?._id]);
+  }, [tag, user?._id, isPublic]);
 
   useEffect(() => {
     fetchNotes();
@@ -82,7 +101,9 @@ const Home: FC = () => {
         </div>
       </div>
       <div className="h-8 px-4">
-        {tag ? (
+        {isPublic ? (
+          <p className="text-2xl">Public Notes by {user?.email || "Unknown"}</p>
+        ) : tag ? (
           <p className="text-2xl">Notes with #{tag}</p>
         ) : (
           <p className="text-2xl">All Notes</p>

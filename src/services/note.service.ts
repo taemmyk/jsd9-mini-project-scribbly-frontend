@@ -6,6 +6,11 @@ export const getAllNotes = async (): Promise<{ notes: Note[] }> => {
   return response.data;
 };
 
+export const getPublicNotesByMe = async (id: string): Promise<{ notes: Note[] }> => {
+  const response = await api.get<{ notes: Note[] }>(`/mongo/notes/public/${id}`);
+  return response.data;
+};
+
 export const getNotesByMe = async (id: string): Promise<{ notes: Note[] }> => {
   const response = await api.get<{ notes: Note[] }>(`/mongo/notes/${id}`);
   return response.data;
