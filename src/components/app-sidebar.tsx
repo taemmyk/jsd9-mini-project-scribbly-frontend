@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChevronDown,
   Home,
@@ -27,37 +28,21 @@ import {
 } from "@/components/ui/collapsible";
 import UserContext from "./contexts/user-context";
 import { getTagsByMe } from "@/services/note.service";
+import { logoutUser } from "@/services/user.service";
 
-const navigationItems = [
-  {
-    title: "All notes",
-    url: "/home",
-    icon: Home,
-  },
-  {
-    title: "New note",
-    url: "/note/new",
-    icon: StickyNote,
-  },
-];
-
-const accountItems = [
-  {
-    title: "View as public",
-    url: "#",
-    icon: DoorOpen,
-  },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
-  {
-    title: "Logout",
-    url: "#",
-    icon: LogOut,
-  },
-];
+type SidebarItem =
+  | {
+      title: string;
+      url: string;
+      icon: React.ElementType;
+      onClick?: never;
+    }
+  | {
+      title: string;
+      icon: React.ElementType;
+      onClick: () => void;
+      url?: never;
+    };
 
 export function AppSidebar() {
   const context = useContext(UserContext);
@@ -66,6 +51,8 @@ export function AppSidebar() {
   const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   useEffect(() => {
     getTagsByMe()
@@ -80,6 +67,51 @@ export function AppSidebar() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setUser(null);
+      navigate("/");
+    } catch (error) {
+      if (error instanceof Error) {
+        alert("Logout failed: " + error.message);
+      } else {
+        alert("Logout failed");
+      }
+    }
+  };
+
+  const navigationItems = [
+    {
+      title: "All notes",
+      url: "/home",
+      icon: Home,
+    },
+    {
+      title: "New note",
+      url: "/note/new",
+      icon: StickyNote,
+    },
+  ];
+
+  const accountItems: SidebarItem[] = [
+    {
+      title: "View as public",
+      url: "#",
+      icon: DoorOpen,
+    },
+    {
+      title: "Settings",
+      url: "/settings",
+      icon: Settings,
+    },
+    {
+      title: "Logout",
+      onClick: handleLogout,
+      icon: LogOut,
+    },
+  ];
 
   return (
     <Sidebar>
@@ -103,7 +135,10 @@ export function AppSidebar() {
                 {navigationItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <Link to={item.url} className="flex items-center space-x-2">
+                      <Link
+                        to={item.url}
+                        className="flex items-center space-x-2"
+                      >
                         <item.icon className="mr-2 h-4 w-4" />
                         <span>{item.title}</span>
                       </Link>
@@ -129,10 +164,18 @@ export function AppSidebar() {
                   </SidebarGroupLabel>
 
                   <CollapsibleContent className="space-y-1 list-none">
-                    {loading && <p className="text-sm text-muted-foreground">Loading...</p>}
-                    {error && <p className="text-sm text-destructive">{error}</p>}
+                    {loading && (
+                      <p className="text-sm text-muted-foreground">
+                        Loading...
+                      </p>
+                    )}
+                    {error && (
+                      <p className="text-sm text-destructive">{error}</p>
+                    )}
                     {!loading && !error && tags.length === 0 && (
-                      <p className="text-sm text-muted-foreground">No tags found</p>
+                      <p className="text-sm text-muted-foreground">
+                        No tags found
+                      </p>
                     )}
                     {!loading &&
                       tags.map((tag) => (
@@ -161,13 +204,23 @@ export function AppSidebar() {
                     {accountItems.map((item) => (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
-                          <Link
-                            to={item.url}
-                            className="flex items-center space-x-2"
-                          >
-                            <item.icon className="mr-2 h-4 w-4" />
-                            <span>{item.title}</span>
-                          </Link>
+                          {item.onClick ? (
+                            <button
+                              onClick={item.onClick}
+                              className="flex items-center space-x-2 w-full text-left"
+                            >
+                              <item.icon className="mr-2 h-4 w-4" />
+                              <span>{item.title}</span>
+                            </button>
+                          ) : (
+                            <Link
+                              to={item.url!}
+                              className="flex items-center space-x-2"
+                            >
+                              <item.icon className="mr-2 h-4 w-4" />
+                              <span>{item.title}</span>
+                            </Link>
+                          )}
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     ))}

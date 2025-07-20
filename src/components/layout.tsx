@@ -10,8 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Smile } from "lucide-react";
 import UserContext from "./contexts/user-context";
-import api from "@/services/api";
-import { AxiosError } from "axios";
+import { logoutUser } from "@/services/user.service";
 
 export default function Layout({ children }: { children?: ReactNode }) {
   const { user } = useContext(UserContext);
@@ -24,22 +23,18 @@ export default function Layout({ children }: { children?: ReactNode }) {
   const { setUser } = useContext(UserContext);
 
   const handleLogout = async () => {
-  try {
-    await api.post("/mongo/logout");
-    setUser(null);
-    navigate("/");
-  } catch (err: unknown) {
-    if (err && typeof err === "object" && "response" in err) {
-      const error = err as AxiosError<{ message: string }>;
-      console.error("❌ Logout error:", error.response?.data || error.message);
-      alert("Logout failed: " + (error.response?.data?.message || "Unknown error"));
-    } else {
-      console.error("❌ Logout error:", err);
-      alert("Logout failed");
+    try {
+      await logoutUser();
+      setUser(null);
+      navigate("/");
+    } catch (error) {
+      if (error instanceof Error) {
+        alert("Logout failed: " + error.message);
+      } else {
+        alert("Logout failed");
+      }
     }
-  }
-};
-
+  };
 
   return (
     <SidebarProvider>
