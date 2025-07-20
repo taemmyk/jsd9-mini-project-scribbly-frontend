@@ -4,7 +4,6 @@ import {
   ChevronDown,
   Home,
   StickyNote,
-  Settings,
   Tag,
   Hash,
   DoorOpen,
@@ -104,11 +103,6 @@ export function AppSidebar() {
       title: "View as public",
       onClick: handleViewAsPublic,
       icon: DoorOpen,
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings,
     },
     {
       title: "Logout",
