@@ -12,7 +12,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    console.log("🔼 Sending request to:", config.url);
+    // console.log("🔼 Sending request to:", config.url);
     return config;
   },
   (error: AxiosError) => {
@@ -22,11 +22,11 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log("✅ Got response:", response.status);
+    // console.log("✅ Got response:", response.status);
     return response;
   },
   (error: AxiosError) => {
-    console.error("❌ API error:", error.response?.status);
+    // console.error("❌ API error:", error.response?.status);
     return Promise.reject(error);
   }
 );
